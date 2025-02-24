@@ -1,1 +1,0 @@
-from .extract_filters_prompt import EXTRACT_FILTERS_PROMPT_TEMPLATE
