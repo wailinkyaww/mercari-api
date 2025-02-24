@@ -1,0 +1,6 @@
+# virtual env files
+env/*
+venv/*
+
+# editor config files
+.idea
