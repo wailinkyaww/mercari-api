@@ -51,9 +51,14 @@ def extract_filters(openai_client: OpenAI, messages):
         model="gpt-4-turbo"
     )
 
-    llm_response = response['choices'][0]['message']['content'].strip()
+    llm_response = response.choices[0].message.content
 
     try:
+        # clean if the model produce the markdown tagging for JSON
+        llm_response = llm_response.replace('```json', '')
+        llm_response = llm_response.replace('```', '')
+        llm_response = llm_response.strip()
+
         parsed_result = json.loads(llm_response)
         return parsed_result, None
     except json.JSONDecodeError:

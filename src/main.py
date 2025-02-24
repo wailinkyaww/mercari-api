@@ -1,5 +1,4 @@
 import os
-import asyncio
 
 from typing import List, Literal
 
@@ -11,6 +10,8 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from .services import extract_filters
+
 load_dotenv()
 
 app = FastAPI()
@@ -20,6 +21,10 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
+)
+
+openai_client = OpenAI(
+    api_key=os.getenv('OPENAI_API_KEY')
 )
 
 
@@ -40,6 +45,8 @@ class SearchCompletionRequest(BaseModel):
 
 @app.post('/generate-search-completion')
 async def generate_search_completion(request: SearchCompletionRequest):
+    parsed_result, error = extract_filters(openai_client, request.messages)
+
     response = generate_streamed_response(request.messages)
 
     return StreamingResponse(
@@ -49,12 +56,10 @@ async def generate_search_completion(request: SearchCompletionRequest):
 
 
 async def generate_streamed_response(messages: List[Message]):
-    await asyncio.sleep(3)  # Simulating delay
     yield "Starting response...\n"
 
     for message in messages:
         chunk = f"Role: {message.role} - Content: {message.content}\n"
         yield chunk
-        await asyncio.sleep(1)  # Simulate processing delay
 
     yield "End of stream.\n"
