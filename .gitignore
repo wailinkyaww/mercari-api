@@ -4,3 +4,9 @@ venv/*
 
 # editor config files
 .idea
+
+# environment variables
+.env
+
+# cache
+__pycache__
