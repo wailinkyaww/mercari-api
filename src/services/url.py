@@ -1,7 +1,7 @@
 from typing import Dict, Any
 
 
-def construct_product_search_url(params: Dict[str, Any]):
+def construct_products_search_url(params: Dict[str, Any]):
     base_url = "https://www.mercari.com/search/"
     query_params = []
 
