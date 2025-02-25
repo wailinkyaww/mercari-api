@@ -1,3 +1,10 @@
+### Setup Guide
+
+Run playwright container using docker compose first.
+```shell
+docker compose up -d
+```
+
 ### Running Test Cases
 
 Run following command to run the test cases.

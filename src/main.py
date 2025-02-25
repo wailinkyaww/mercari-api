@@ -77,11 +77,18 @@ async def generate_streamed_response(messages: List[Message]):
     yield json.dumps({
         "blockType": "status_update",
         "status": "filters_extraction_done",
-        "message": "Has identified & prepared the following filters based on your query.",
+        "message": "Has identified & prepared the following filters based on user query.",
         "filters": dict(parsed_result)
     }) + '\n'
 
     product_search_url = construct_product_search_url(parsed_result)
+
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "scraping_products",
+        "message": "Searching products on mercari.",
+        "url": product_search_url
+    }) + '\n'
 
     print(parsed_result)
     print(product_search_url)
