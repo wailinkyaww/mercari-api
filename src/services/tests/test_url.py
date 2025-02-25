@@ -13,14 +13,14 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "price_max": 5000,
             "free_shipping": True
         }
-        expected_url = "https://mercari.com/search?keywords=leather%20shorts&countrySources=2&itemConditions=2&priceMin=1000&priceMax=5000&shippingPayerIds=2"
+        expected_url = "https://www.mercari.com/search/?keyword=leather%20shorts&countrySources=2&itemConditions=2&priceMin=1000&priceMax=5000&shippingPayerIds=2"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_minimal_parameters(self):
         params = {
             "search_keyword": "wallet"
         }
-        expected_url = "https://mercari.com/search?keywords=wallet"
+        expected_url = "https://www.mercari.com/search/?keyword=wallet"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_no_condition(self):
@@ -29,7 +29,7 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "item_origin": "USA",
             "price_min": 200
         }
-        expected_url = "https://mercari.com/search?keywords=jacket&countrySources=1&priceMin=200"
+        expected_url = "https://www.mercari.com/search/?keyword=jacket&countrySources=1&priceMin=200"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_no_origin(self):
@@ -38,7 +38,7 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "condition": "good",
             "price_max": 3000
         }
-        expected_url = "https://mercari.com/search?keywords=shoes&itemConditions=3&priceMax=3000"
+        expected_url = "https://www.mercari.com/search/?keyword=shoes&itemConditions=3&maxPrice=3000"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_free_shipping_only(self):
@@ -46,7 +46,7 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "search_keyword": "hat",
             "free_shipping": True
         }
-        expected_url = "https://mercari.com/search?keywords=hat&shippingPayerIds=2"
+        expected_url = "https://www.mercari.com/search/?keyword=hat&shippingPayerIds=2"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_invalid_condition(self):
@@ -56,12 +56,12 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
         }
 
         # should ignore the invalid condition
-        expected_url = "https://mercari.com/search?keywords=watch"
+        expected_url = "https://www.mercari.com/search/?keyword=watch"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
     def test_empty_params(self):
         params = {}
-        expected_url = "https://mercari.com/search?"
+        expected_url = "https://www.mercari.com/search/?"
         self.assertEqual(construct_product_search_url(params), expected_url)
 
 

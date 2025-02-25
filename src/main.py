@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .services import extract_filters
+from .services import extract_filters, construct_product_search_url
 
 load_dotenv()
 
@@ -81,4 +81,7 @@ async def generate_streamed_response(messages: List[Message]):
         "filters": dict(parsed_result)
     }) + '\n'
 
+    product_search_url = construct_product_search_url(parsed_result)
+
     print(parsed_result)
+    print(product_search_url)
