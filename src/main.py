@@ -1,3 +1,4 @@
+import json
 import os
 
 from typing import List, Literal
@@ -45,8 +46,6 @@ class SearchCompletionRequest(BaseModel):
 
 @app.post('/generate-search-completion')
 async def generate_search_completion(request: SearchCompletionRequest):
-    parsed_result, error = extract_filters(openai_client, request.messages)
-
     response = generate_streamed_response(request.messages)
 
     return StreamingResponse(
@@ -56,10 +55,30 @@ async def generate_search_completion(request: SearchCompletionRequest):
 
 
 async def generate_streamed_response(messages: List[Message]):
-    yield "Starting response...\n"
+    """
+    As the downstream client is NextJS / TypeScript,
+    we will use camelCase for JSON keys
+    """
 
-    for message in messages:
-        chunk = f"Role: {message.role} - Content: {message.content}\n"
-        yield chunk
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "query_analysis",
+        "message": "Analysing user query - what to buy on Mercari"
+    }) + '\n'
 
-    yield "End of stream.\n"
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "extracting_filters",
+        "message": "Extracting search keywords and filters."
+    }) + '\n'
+
+    parsed_result, error = extract_filters(openai_client, messages)
+
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "filters_extraction_done",
+        "message": "Has identified & prepared the following filters based on your query.",
+        "filters": dict(parsed_result)
+    }) + '\n'
+
+    print(parsed_result)
