@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import json
 import os
 
@@ -5,15 +8,13 @@ from typing import List, Literal
 
 from openai import OpenAI
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
 
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .services import extract_filters, construct_product_search_url
+from .services import extract_filters, construct_products_search_url, search_products
 
-load_dotenv()
 
 app = FastAPI()
 app.add_middleware(
@@ -81,14 +82,16 @@ async def generate_streamed_response(messages: List[Message]):
         "filters": dict(parsed_result)
     }) + '\n'
 
-    product_search_url = construct_product_search_url(parsed_result)
+    products_search_url = construct_products_search_url(parsed_result)
 
     yield json.dumps({
         "blockType": "status_update",
         "status": "scraping_products",
         "message": "Searching products on mercari.",
-        "url": product_search_url
+        "url": products_search_url
     }) + '\n'
 
     print(parsed_result)
-    print(product_search_url)
+    print(products_search_url)
+
+    await search_products(products_search_url)
