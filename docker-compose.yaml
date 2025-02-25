@@ -1,13 +1,11 @@
 version: "3.8"
 
 services:
-  playwright:
-    image: mcr.microsoft.com/playwright:v1.50.1-noble
-    container_name: playwright
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
     ports:
-      - "4000:4000"
-    working_dir: /home/pwuser
-    init: true
-    user: pwuser
+      - "8191:8191"
+    environment:
+      - LOG_LEVEL=info
     restart: always
-    command: /bin/sh -c "npx -y playwright@1.50.1 run-server --port 4000 --host 0.0.0.0"

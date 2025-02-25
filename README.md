@@ -1,6 +1,6 @@
 ### Setup Guide
 
-Run playwright container using docker compose first.
+Run flaresolverr container using docker compose first.
 ```shell
 docker compose up -d
 ```
