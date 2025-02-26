@@ -108,9 +108,11 @@ def retrieve_product_details(product_url: str):
     soup = BeautifulSoup(html_content, "html.parser")
     spec_element = soup.find(attrs={'data-testid': 'Spec'})
 
-    # The idea is simple -- as we are sure if the element (with our assumed data-testid) will be present all the time,
+    # The idea is simple -- as we are not sure if the element (with our assumed data-testid) will be present all the time,
     # we do best effort strategy, where we inspect it.
     # If the elements are present, then we attach to product details dict.
+    # If not, we simply ignore.
+    # This will help reduce the failure rate.
     extract_info(spec_element, product_details, 'product_update_at', 'ItemDetailExternalUpdated')
     extract_info(spec_element, product_details, 'product_posted_at', 'ItemDetailsPosted')
     extract_info(spec_element, product_details, 'production_condition', 'ItemDetailsCondition')
