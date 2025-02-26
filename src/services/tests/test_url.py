@@ -13,7 +13,7 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "price_max": 5000,
             "free_shipping": True
         }
-        expected_url = "https://www.mercari.com/search/?keyword=leather%20shorts&countrySources=2&itemConditions=2&priceMin=1000&priceMax=5000&shippingPayerIds=2"
+        expected_url = "https://www.mercari.com/search/?keyword=leather%20shorts&countrySources=2&itemConditions=2&minPrice=1000&maxPrice=5000&shippingPayerIds=2"
         self.assertEqual(construct_products_search_url(params), expected_url)
 
     def test_minimal_parameters(self):
@@ -29,7 +29,7 @@ class TestConstructMercariProductSearchUrl(unittest.TestCase):
             "item_origin": "USA",
             "price_min": 200
         }
-        expected_url = "https://www.mercari.com/search/?keyword=jacket&countrySources=1&priceMin=200"
+        expected_url = "https://www.mercari.com/search/?keyword=jacket&countrySources=1&minPrice=200"
         self.assertEqual(construct_products_search_url(params), expected_url)
 
     def test_no_origin(self):
