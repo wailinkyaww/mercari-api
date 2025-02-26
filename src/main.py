@@ -18,7 +18,8 @@ from .services import (
     construct_products_search_url,
     search_products,
     recommend_products,
-    enrich_products
+    enrich_products,
+    format_messages_for_recommendation_query
 )
 
 app = FastAPI()
@@ -92,7 +93,7 @@ def generate_streamed_response(messages: List[Message]):
 
     products = search_products(
         products_search_url=products_search_url,
-        max_items=5
+        max_items=3
     )
 
     yield json.dumps({
@@ -110,14 +111,17 @@ def generate_streamed_response(messages: List[Message]):
         "message": f"Fetched product details & seller ratings. Analysing products for recommendation.",
     }) + '\n'
 
-    # TODO:: would be great if we can do conversation support.
-    # But, this is not as dire as conversation support in filter extractions
-    user_query = messages[-1].content
+    # we won't go beyond
+    last_n_messages = 3
+    query = format_messages_for_recommendation_query(messages[:last_n_messages])
 
-    stream = recommend_products(openai_client, products, user_query)
+    stream = recommend_products(openai_client, products, query)
     for token in stream:
         if token is not None:
             yield json.dumps({
                 "blockType": "completion_response",
                 "content": token
             }) + '\n'
+
+
+

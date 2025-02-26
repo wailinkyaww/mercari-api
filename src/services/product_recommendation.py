@@ -75,3 +75,18 @@ def recommend_products(openai_client: OpenAI, products: List, user_query: str):
 
         if (token is not None) or (token != ""):
             yield token
+
+
+# This is to make sure we don't flood up the recommendation
+# prompt with old system prompt which might not be quite useful
+# we will only provide the user's query in the history
+def format_messages_for_recommendation_query(messages):
+    query = ""
+
+    for msg in messages:
+        if msg.role == "assistant":
+            query = query + "\nassistant: answer here, left out of brevity, use the provided up to date information to answer"
+        else:
+            query = query + f"\nuser: {msg.content}"
+
+    return query
