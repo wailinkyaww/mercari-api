@@ -17,7 +17,8 @@ from .services import (
     extract_filters,
     construct_products_search_url,
     search_products,
-    recommend_products
+    recommend_products,
+    enrich_products
 )
 
 app = FastAPI()
@@ -67,7 +68,7 @@ def generate_streamed_response(messages: List[Message]):
 
     yield json.dumps({
         "blockType": "status_update",
-        "status": "extracting_filters",
+        "status": "generic",
         "message": "Analysing user query, extracting search keywords and filters."
     }) + '\n'
 
@@ -89,13 +90,24 @@ def generate_streamed_response(messages: List[Message]):
         "url": products_search_url
     }) + '\n'
 
-    products = search_products(products_search_url)
+    products = search_products(
+        products_search_url=products_search_url,
+        max_items=3
+    )
 
     yield json.dumps({
         "blockType": "status_update",
         "status": "products_scraped",
-        "message": f"Got {len(products)} products from Mercari. Analysing most relevant products...",
+        "message": f"Got {len(products)} products from Mercari. Fetching product details & seller ratings.",
         "products": products
+    }) + '\n'
+
+    products = enrich_products(products)
+
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "generic",
+        "message": f"Fetched product details & seller ratings. Analysing products for recommendation.",
     }) + '\n'
 
     # TODO:: would be great if we can do conversation support.

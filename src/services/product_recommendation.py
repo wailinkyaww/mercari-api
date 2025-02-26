@@ -3,14 +3,26 @@ import json
 from openai import OpenAI
 from typing import List
 
-
 PRODUCT_RECOMMENDATION_PROMPT = """
 You are an expert at understanding user requests for online marketplaces, specifically for Mercari Japan. 
 
 You will be provided with the input from user and relevant product search results those are tailored to the user query.
 
+Each product will include 
+- name
+- description
+- price
+- sale status
+- categories
+- seller ratings (stars & review counts)
+
+Note that these fields can be missing as well.
+
 Your job is to pick top 3 most relevant products out of the provided product search results.
 You should also provide reasoning why each choice is relevant to user's request.
+
+Use your best ability to pick most relevant products and provide recommendation to user.
+Provide clear and concise reasoning for each recommendation.
 
 **User Query**
 {user_query}
@@ -22,18 +34,27 @@ You should also provide reasoning why each choice is relevant to user's request.
 Here is the outline for your response.
 
 #### 1. Product name
-- **Price:** Price with currency
+- **<Property 1>:** <value>
+- **<Property 2>:** <value>
+- ...
 - **Reasoning:** Provide a reasoning description on why you recommend this product.
 <Markdown Image>
-<Link to see the details - use product url>
+<View Product on Mercari - use product url>
 
 #### 2. Product name
-- **Price:** Price with currency
+- **<Property 1>:** <value>
+- **<Property 2>:** <value>
+- ...
 - **Reasoning:** Provide a reasoning description on why you recommend this product.
 <Markdown Image>
-<Link to see the details - use product url>
+<View Product on Mercari - use product url>
 
-Now provide the recommendation output up to 3 products in presentable markdown format to user.
+Answer from the point of view that you are talking to user.
+Do not mention anything about the provided list.
+Do not include any filler words.
+
+Make sure you provide all the useful information in each recommendation block.
+Now generate the recommendation output up to 3 products in presentable markdown format to user.
 """
 
 
