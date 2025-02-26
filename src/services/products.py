@@ -1,6 +1,5 @@
 import os
 import requests
-import concurrent.futures
 
 from typing import Dict
 from bs4 import BeautifulSoup
@@ -125,11 +124,10 @@ def retrieve_product_details(product_url: str):
     return product_details
 
 
-"""
-Use this to fetch the products in sequential.
-Anyway, flaresolverr has it's own queuing.
-
 def enrich_products(products):
+    """
+    Use this to fetch the products in sequential.
+    """
     enriched_products = []
 
     for product in products:
@@ -143,23 +141,22 @@ def enrich_products(products):
         })
 
     return enriched_products
-"""
 
-
-def enrich_products(products):
-    """
-    Enriches a list of products by retrieving additional details for each product.
-
-    :param products: List of product that we got back from product search
-    :return: List of product -- each with more detailed information
-    """
-
-    def fetch_details(product):
-        print(f'Retrieving product details for: {product.get("product_url")}')
-        details = retrieve_product_details(product.get("product_url"))
-        return {**product, **details}
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        enriched_products = list(executor.map(fetch_details, products))
-
-    return enriched_products
+# Alternative implementation to fire the requests in parallel.
+# def enrich_products(products):
+#     """
+#     Enriches a list of products by retrieving additional details for each product.
+#
+#     :param products: List of product that we got back from product search
+#     :return: List of product -- each with more detailed information
+#     """
+#
+#     def fetch_details(product):
+#         print(f'Retrieving product details for: {product.get("product_url")}')
+#         details = retrieve_product_details(product.get("product_url"))
+#         return {**product, **details}
+#
+#     with concurrent.futures.ThreadPoolExecutor() as executor:
+#         enriched_products = list(executor.map(fetch_details, products))
+#
+#     return enriched_products
