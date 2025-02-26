@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 FLARESOLVERR_URL = os.getenv('FLARESOLVERR_URL')
 
 
-async def search_products(product_search_url: str, max_items=10):
+def search_products(product_search_url: str, max_items=10):
     """
     Scrape the given product search URL through flaresolverr.
     Currently, Mercari has CloudFlare protection.

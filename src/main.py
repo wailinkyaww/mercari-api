@@ -1,20 +1,23 @@
 from dotenv import load_dotenv
 load_dotenv()
 
-import json
 import os
-
-from typing import List, Literal
+import json
 
 from openai import OpenAI
+from typing import List, Literal
 from pydantic import BaseModel, Field
 
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from .services import extract_filters, construct_products_search_url, search_products
-
+from .services import (
+    extract_filters,
+    construct_products_search_url,
+    search_products,
+    recommend_products
+)
 
 app = FastAPI()
 app.add_middleware(
@@ -46,7 +49,7 @@ class SearchCompletionRequest(BaseModel):
 
 
 @app.post('/generate-search-completion')
-async def generate_search_completion(request: SearchCompletionRequest):
+def generate_search_completion(request: SearchCompletionRequest):
     response = generate_streamed_response(request.messages)
 
     return StreamingResponse(
@@ -55,7 +58,7 @@ async def generate_search_completion(request: SearchCompletionRequest):
     )
 
 
-async def generate_streamed_response(messages: List[Message]):
+def generate_streamed_response(messages: List[Message]):
     """
     As the downstream client is NextJS / TypeScript,
     we will use camelCase for JSON keys
@@ -63,15 +66,10 @@ async def generate_streamed_response(messages: List[Message]):
 
     yield json.dumps({
         "blockType": "status_update",
-        "status": "query_analysis",
-        "message": "Analysing user query - what to buy on Mercari"
+        "status": "extracting_filters",
+        "message": "Analysing user query, extracting search keywords and filters."
     }) + '\n'
 
-    yield json.dumps({
-        "blockType": "status_update",
-        "status": "extracting_filters",
-        "message": "Extracting search keywords and filters."
-    }) + '\n'
 
     parsed_result, error = extract_filters(openai_client, messages)
 
@@ -87,11 +85,26 @@ async def generate_streamed_response(messages: List[Message]):
     yield json.dumps({
         "blockType": "status_update",
         "status": "scraping_products",
-        "message": "Searching products on mercari.",
+        "message": "Searching relevant products",
         "url": products_search_url
     }) + '\n'
 
-    print(parsed_result)
-    print(products_search_url)
+    products = search_products(products_search_url)
 
-    await search_products(products_search_url)
+    yield json.dumps({
+        "blockType": "status_update",
+        "status": "products_scraped",
+        "message": f"Got {len(products)} products from Mercari. Analysing most relevant products...",
+        "products": products
+    }) + '\n'
+
+    # TODO:: would be great if we can do conversation support.
+    # But, this is not as dire as conversation support in filter extractions
+    user_query = messages[-1].content
+
+    stream = recommend_products(openai_client, products, user_query)
+    for token in stream:
+        yield json.dumps({
+            "blockType": "completion_response",
+            "content": token
+        }) + '\n'
