@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import os
@@ -70,7 +71,6 @@ def generate_streamed_response(messages: List[Message]):
         "message": "Analysing user query, extracting search keywords and filters."
     }) + '\n'
 
-
     parsed_result, error = extract_filters(openai_client, messages)
 
     yield json.dumps({
@@ -104,7 +104,8 @@ def generate_streamed_response(messages: List[Message]):
 
     stream = recommend_products(openai_client, products, user_query)
     for token in stream:
-        yield json.dumps({
-            "blockType": "completion_response",
-            "content": token
-        }) + '\n'
+        if token is not None:
+            yield json.dumps({
+                "blockType": "completion_response",
+                "content": token
+            }) + '\n'
