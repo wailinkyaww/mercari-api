@@ -93,7 +93,7 @@ def generate_streamed_response(messages: List[Message]):
 
     products = search_products(
         products_search_url=products_search_url,
-        max_items=3
+        max_items=5
     )
 
     yield json.dumps({
