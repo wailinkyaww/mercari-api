@@ -1,6 +1,6 @@
 ## Overview
 
-This is an AI agent that understand user requests regarding the queries about shopping on [https://www.mercari.com/](Mercari) .
+This is an AI agent that understand user requests regarding the queries about shopping on [Mercari](https://www.mercari.com/) .
 And suggest top matching products back to user in a conversational and user-friendly way.
 
 - Backend - https://github.com/wailinkyaww/mercari-api
