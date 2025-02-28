@@ -1,4 +1,4 @@
-### Overview
+## Overview
 
 Architecture & Flow Diagram
 
@@ -11,7 +11,7 @@ We have three instances
 - scraping (FlareSolverr)
   with the language model of `gpt4-turbo`.
 
-#### Agent Architecture**
+### Agent Architecture
 
 **Filters Extraction**
 
