@@ -1,6 +1,10 @@
 ## Overview
 
-Architecture & Flow Diagram
+This is an AI agent that understand user requests regarding the queries about shopping on Mercari - https://www.mercari.com/ .
+
+And suggest top matching products back to user in a conversational and user-friendly way.
+
+**Architecture & Flow Diagram**
 
 ![Architecture Diagram](./assets/architecture-diagram.svg)
 
