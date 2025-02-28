@@ -4,6 +4,9 @@ This is an AI agent that understand user requests regarding the queries about sh
 
 And suggest top matching products back to user in a conversational and user-friendly way.
 
+Backend - https://github.com/wailinkyaww/mercari-api
+Frontend - https://github.com/wailinkyaww/mercari-client
+
 **Architecture & Flow Diagram**
 
 ![Architecture Diagram](./assets/architecture-diagram.svg)
